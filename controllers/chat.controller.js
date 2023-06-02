@@ -132,6 +132,11 @@ module.exports.renameGroup = asyncHandler(async (req, res) => {
 module.exports.addToGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
+  if (!chatId || !userId) {
+    return res.status(404).json({
+      message: "please fill all the required fields",
+    });
+  }
   const groupChat = await Chat.findByIdAndUpdate(
     chatId,
     {
@@ -150,5 +155,34 @@ module.exports.addToGroup = asyncHandler(async (req, res) => {
     });
   } else {
     return res.status(200).json(groupChat);
+  }
+});
+
+module.exports.removeFromGroup = asyncHandler(async (req, res) => {
+  const { chatId, userId } = req.body;
+
+  if (!chatId || !userId) {
+    return res.status(404).json({
+      message: "please fill all the required fields",
+    });
+  }
+  const removed = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $pull: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!removed) {
+    return res.status(404).json({
+      message: "UserId or ChatId not found",
+    });
+  } else {
+    return res.status(200).json(removed);
   }
 });
