@@ -104,3 +104,27 @@ module.exports.createGroupChat = asyncHandler(async (req, res) => {
     });
   }
 });
+
+module.exports.renameGroup = asyncHandler(async (req, res) => {
+  const { chatId, chatName } = req.body;
+
+  const updateGroupChat = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      chatName,
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updateGroupChat) {
+    return res.status(404).json({
+      message: "chat not found",
+    });
+  }else{
+    return res.status(200).json(updateGroupChat);
+  }
+});
