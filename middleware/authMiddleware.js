@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user.model");
 
-const protect = async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
@@ -21,6 +21,6 @@ const protect = async (req, res, next) => {
   if (!token) {
     res.status(403).json({ message: "Please provide a token first" });
   }
-};
+});
 
 module.exports = protect;
