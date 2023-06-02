@@ -124,7 +124,31 @@ module.exports.renameGroup = asyncHandler(async (req, res) => {
     return res.status(404).json({
       message: "chat not found",
     });
-  }else{
+  } else {
     return res.status(200).json(updateGroupChat);
+  }
+});
+
+module.exports.addToGroup = asyncHandler(async (req, res) => {
+  const { chatId, userId } = req.body;
+
+  const groupChat = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $push: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!groupChat) {
+    return res.status(404).json({
+      message: "UserId or ChatId not found",
+    });
+  } else {
+    return res.status(200).json(groupChat);
   }
 });

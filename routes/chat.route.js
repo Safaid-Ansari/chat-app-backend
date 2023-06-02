@@ -5,6 +5,7 @@ const {
   fetchChats,
   createGroupChat,
   renameGroup,
+  addToGroup,
 } = require("../controllers/chat.controller");
 const router = express.Router();
 
