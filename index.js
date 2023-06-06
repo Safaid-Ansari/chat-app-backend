@@ -29,7 +29,7 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 6000,
   cors: {
-    origin: "http://localhost:8000",
+    origin: "https://chat-application-q25n.onrender.com",
   },
 });
 
